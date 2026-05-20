@@ -20,9 +20,27 @@
       padding-top: env(safe-area-inset-top);
     }
     .container { padding: 20px; max-width: 600px; margin: 0 auto; }
-    header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #e50914; padding-bottom: 15px; }
-    h1 { margin: 0; font-size: 2em; font-weight: 800; color: white; }
+    
+    header { 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      margin-bottom: 30px; 
+      border-bottom: 2px solid #e50914; 
+      padding-bottom: 15px; 
+    }
+    h1 { margin: 0; font-size: 1.8em; font-weight: 800; color: white; }
+    
+    .header-btns { display: flex; gap: 10px; }
+    .nav-btn {
+      background: #222; color: white; border: 1px solid #444; padding: 8px 14px;
+      border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 0.85em;
+    }
+    #btn-carousel { background: #e50914; border-color: #e50914; }
+
     h2 { font-size: 1.4em; color: #e50914; margin-top: 30px; border-left: 4px solid #e50914; padding-left: 10px; }
+    
+    /* Cartes d'articles */
     .card {
       background: #1e1e1e; border-radius: 12px; margin-bottom: 20px;
       box-shadow: 0 4px 15px rgba(0,0,0,0.3); overflow: hidden;
@@ -33,20 +51,35 @@
     .card-body { padding: 15px; }
     .card-title { margin: 0 0 10px 0; font-size: 1.15em; font-weight: bold; }
     .card-title a { color: white; text-decoration: none; }
-    .card-title a:hover { color: #e50914; }
     .card-desc { font-size: 0.9em; color: #aaaaaa; line-height: 1.4; }
     .loading { text-align: center; color: #888; padding: 50px; font-size: 1.1em; }
     
-    #btn-carousel {
-      background: #e50914; color: white; border: none; padding: 12px 24px;
-      border-radius: 25px; font-weight: bold; margin: 15px auto; display: block;
-      cursor: pointer; box-shadow: 0 4px 10px rgba(229, 9, 20, 0.4); font-size: 0.95em;
+    /* --- PANNEAU DE GESTION DES FLUX (MENU COULISSANT MOBILE) --- */
+    #sources-panel {
+      display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.9); z-index: 10000; padding: 40px 20px; box-sizing: border-box;
+      overflow-y: auto;
     }
+    .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .close-panel-btn { background: none; border: none; color: white; font-size: 1.5em; cursor: pointer; }
     
-    /* Plein écran Carrousel */
+    .bulk-actions { display: flex; justify-content: space-between; margin-bottom: 20px; }
+    .bulk-btn { background: #333; color: white; border: 1px solid #555; padding: 6px 12px; font-size: 0.85em; border-radius: 6px; }
+    
+    .source-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #1e1e1e; margin-bottom: 10px; border-radius: 8px; border: 1px solid #2d2d2d; }
+    .source-label-zone { display: flex; align-items: center; gap: 10px; font-size: 1em; width: 80%; }
+    .source-checkbox { width: 18px; height: 18px; }
+    .status-badge { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .delete-source-btn { background: none; border: none; color: #ff4444; font-size: 1.1em; cursor: pointer; }
+    
+    .form-title { font-size: 1.1em; margin: 25px 0 10px 0; font-weight: bold; color: #e50914; }
+    .input-field { width: 100%; padding: 12px; background: #2d2d2d; border: 1px solid #444; color: white; border-radius: 8px; margin-bottom: 12px; box-sizing: border-box; }
+    #btn-add-source { width: 100%; background: #e50914; color: white; border: none; padding: 12px; font-weight: bold; border-radius: 8px; }
+
+    /* --- COULISSES CARROUSEL PLEIN ÉCRAN --- */
     #carousel-overlay {
       display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-      background: #000; z-index: 9999; color: white;
+      background: #000; z-index: 20000; color: white;
     }
     .slide {
       width: 100%; height: 100%; display: flex; flex-direction: column;
@@ -55,157 +88,274 @@
     }
     .slide::before {
       content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-      background: linear-gradient(to top, rgba(0,0,0,0.95) 40%, rgba(0,0,0,0.4) 100%); z-index: 1;
+      background: linear-gradient(to top, rgba(0,0,0,0.95) 45%, rgba(0,0,0,0.3) 100%); z-index: 1;
     }
-    .slide-content { position: relative; z-index: 2; background: rgba(20,20,20,0.85); padding: 20px; border-radius: 12px; border: 1px solid #333; }
-    #close-carousel { position: absolute; top: 40px; right: 20px; background: rgba(255,255,255,0.2); color: white; border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 18px; z-index: 10; }
+    .slide-content { position: relative; z-index: 2; background: rgba(20,20,20,0.9); padding: 25px; border-radius: 12px; border: 1px solid #333; }
+    #close-carousel { position: absolute; top: 40px; right: 20px; background: rgba(255,255,255,0.2); color: white; border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 18px; z-index: 25000; }
+    
+    /* Bouton remonté et élargi dans le Carrousel Mobile */
+    .carousel-action-btn { 
+      background: #e50914; color: white; border: none; padding: 12px 20px; 
+      border-radius: 8px; font-weight: bold; font-size: 1em; width: 100%; 
+      margin-bottom: 15px; cursor: pointer; display: block; text-align: center;
+      box-shadow: 0 4px 12px rgba(229, 9, 20, 0.3);
+    }
   </style>
 </head>
 <body>
 
   <div class="container">
     <header>
-      <h1>Mon Journal Mobile</h1>
-      <button id="btn-carousel">Mode Carrousel 🎠</button>
+      <h1>Mon Journal</h1>
+      <div class="header-btns">
+        <button class="nav-btn" id="btn-open-sources">Sources ⚙️</button>
+        <button class="nav-btn" id="btn-carousel">Carrousel 🎠</button>
+      </div>
     </header>
     <div id="content"><div class="loading">Téléchargement des flux d'actualités sécurisés... ⏳</div></div>
   </div>
 
+  <!-- PANNEAU DE GESTION DES FLUX (AJOUTÉ) -->
+  <div id="sources-panel">
+    <div class="panel-header">
+      <h2 style="margin:0; border:none; padding:0; color:white;">Gestion des Sources</h2>
+      <button class="close-panel-btn" id="btn-close-sources">✕</button>
+    </div>
+    
+    <div class="bulk-actions">
+      <button class="bulk-btn" id="btn-mobile-check-all">☑ Tout cocher</button>
+      <button class="bulk-btn" id="btn-mobile-uncheck-all">☒ Tout décocher</button>
+    </div>
+
+    <div id="mobile-sources-list"></div>
+
+    <div class="form-title">Ajouter un flux RSS personnalisé :</div>
+    <input type="text" id="input-mobile-name" class="input-field" placeholder="Nom (ex: Libération)">
+    <input type="text" id="input-mobile-url" class="input-field" placeholder="Adresse URL du flux RSS">
+    <button id="btn-add-source">Ajouter la source mobile</button>
+  </div>
+
+  <!-- CARROUSEL PLEIN ÉCRAN -->
   <div id="carousel-overlay">
     <button id="close-carousel">✕</button>
     <div id="carousel-slide" style="width:100%; height:100%;"></div>
   </div>
 
   <script>
-    // Liste des flux RSS
-    const FEEDS = [
-      { name: "France Info", url: "https://www.francetvinfo.fr/titres.rss" },
-      { name: "Le Monde", url: "https://www.lemonde.fr/rss/une.xml" }
+    // Catalogue initial par défaut
+    const DEFAULT_SOURCES = [
+      { id: "francetvinfo", name: "France Info", url: "https://www.francetvinfo.fr/titres.rss" },
+      { id: "lemonde", name: "Le Monde", url: "https://www.lemonde.fr/rss/une.xml" },
+      { id: "lefigaro", name: "Le Figaro", url: "https://lefigaro.fr/rss/figaro_actualites.xml" },
+      { id: "courrier", name: "Courrier International", url: "https://www.courrierinternational.com/feed/all/rss.xml" }
     ];
+
+    // Chargement des données sauvegardées sur l'iPhone ou initialisation
+    let masterSources = JSON.parse(localStorage.getItem("mobileCustomSources")) || DEFAULT_SOURCES;
+    let activeSourcesIds = JSON.parse(localStorage.getItem("mobileActiveSources")) || masterSources.map(s => s.id);
+    let sourceStatuses = {}; // Stockage des états de santé (Vert/Rouge)
 
     let articlesGlobal = [];
     let carouselIndex = 0;
     let carouselActive = false;
 
-    // Nettoyage rapide du texte
     function cleanText(text) {
       if (!text) return "";
       return text.replace(/<[^>]*>/g, "").trim();
     }
 
+    // Fonction maîtresse : télécharge et valide TOUS les flux
     async function loadFeeds() {
       const contentDiv = document.getElementById('content');
+      contentDiv.innerHTML = '<div class="loading">Mise à jour du journal... ⏳</div>';
       articlesGlobal = [];
-      let totalArticlesCharges = 0;
+      let activeArticlesCount = 0;
 
-      for (let feed of FEEDS) {
+      for (let source of masterSources) {
         try {
-          // INTERMÉDIAIRE ROBUSTE : Utilisation de l'API rss2json (gratuite et acceptée par Apple)
-          const apiURL = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed.url)}`;
+          const apiURL = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(source.url)}`;
           const response = await fetch(apiURL);
           const data = await response.json();
           
           if (data.status === 'ok' && data.items && data.items.length > 0) {
-            // Créer le titre du journal
-            const sectionTitle = document.createElement('h2');
-            sectionTitle.innerText = feed.name;
-            contentDiv.appendChild(sectionTitle);
+            sourceStatuses[source.id] = "ok"; // Vivant ! (Pastille Verte)
 
-            // On prend les 4 premiers articles du flux
-            const maxItems = Math.min(data.items.length, 4);
-            for (let i = 0; i < maxItems; i++) {
-              const item = data.items[i];
-              
-              let title = item.title || "";
-              let link = item.link || "#";
-              let desc = cleanText(item.description || item.content || "");
-              let img = item.enclosure?.link || item.thumbnail || "";
+            // On n'injecte dans la page que si la source est cochée
+            if (activeSourcesIds.includes(source.id)) {
+              const sectionTitle = document.createElement('h2');
+              sectionTitle.innerText = source.name;
+              contentDiv.appendChild(sectionTitle);
 
-              // Si pas d'image détectée, on essaie d'extraire une image cachée dans la description
-              if (!img && (item.description || item.content)) {
-                const imgMatch = (item.description + item.content).match(/<img[^>]+src=["']([^"']+)["']/i);
-                if (imgMatch) img = imgMatch[1];
-              }
+              const maxItems = Math.min(data.items.length, 4);
+              for (let i = 0; i < maxItems; i++) {
+                const item = data.items[i];
+                let title = item.title || "";
+                let link = item.link || "#";
+                let desc = cleanText(item.description || item.content || "");
+                let img = item.enclosure?.link || item.thumbnail || "";
 
-              if (desc.length > 120) desc = desc.substring(0, 120) + "...";
+                if (!img && (item.description || item.content)) {
+                  const imgMatch = (item.description + item.content).match(/<img[^>]+src=["']([^"']+)["']/i);
+                  if (imgMatch) img = imgMatch[1];
+                }
 
-              if (title) {
-                totalArticlesCharges++;
-                articlesGlobal.push({ title, link, desc, img, source: feed.name });
-                
-                // Dessiner la carte sur l'iPhone
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.innerHTML = `
-                  ${img ? `<div class="card-image-wrap"><img class="card-img" src="${img}"></div>` : ''}
-                  <div class="card-body">
-                    <div class="card-title"><a href="${link}" target="_blank">${title}</a></div>
-                    <p class="card-desc">${desc}</p>
-                  </div>
-                `;
-                contentDiv.appendChild(card);
+                if (desc.length > 120) desc = desc.substring(0, 120) + "...";
+
+                if (title) {
+                  activeArticlesCount++;
+                  articlesGlobal.push({ title, link, desc, img, source: source.name });
+                  
+                  const card = document.createElement('div');
+                  card.className = 'card';
+                  card.innerHTML = `
+                    ${img ? `<div class="card-image-wrap"><img class="card-img" src="${img}"></div>` : ''}
+                    <div class="card-body">
+                      <div class="card-title"><a href="${link}" target="_blank">${title}</a></div>
+                      <p class="card-desc">${desc}</p>
+                    </div>
+                  `;
+                  contentDiv.appendChild(card);
+                }
               }
             }
+          } else {
+            sourceStatuses[source.id] = "error"; // En panne
           }
         } catch (e) {
-          console.log("Erreur de conversion sur le flux : " + feed.name);
+          sourceStatuses[source.id] = "error"; // Inaccessible (Pastille Rouge)
         }
       }
 
-      // Si vraiment TOUS les serveurs ont échoué, on utilise le plan B
-      if (totalArticlesCharges === 0) {
-        contentDiv.innerHTML = "<p style='text-align:center;color:#ff9f43;font-size:0.9em;margin-bottom:20px;'>⚠️ Mode démonstration (Impossible de joindre les serveurs).</p>";
-        injectFakeData(contentDiv);
-      } else {
-        // Enlever le message de chargement résiduel si nécessaire
-        const loader = contentDiv.querySelector('.loading');
-        if (loader) loader.remove();
+      const loader = contentDiv.querySelector('.loading');
+      if (loader) loader.remove();
+
+      if (activeArticlesCount === 0) {
+        contentDiv.innerHTML = "<div class='loading'>Aucun article disponible. Cochez des sources actives dans le menu Sources ⚙️.</div>";
       }
+      
+      renderSourcesMenu(); // Rafraîchit les couleurs des boutons dans le menu masqué
     }
 
-    function injectFakeData(contentDiv) {
-      const fakeSources = ["France Info (Hors-ligne)", "Le Monde (Hors-ligne)"];
-      fakeSources.forEach(source => {
-        const sectionTitle = document.createElement('h2');
-        sectionTitle.innerText = source;
-        contentDiv.appendChild(sectionTitle);
+    // --- CONSTRUCTION DU MENU DE CONFIGURATION IPHONE ---
+    function renderSourcesMenu() {
+      const container = document.getElementById('mobile-sources-list');
+      container.innerHTML = "";
 
-        for (let i = 1; i <= 2; i++) {
-          let title = `Article de test mobile numéro ${i}`;
-          let desc = "Vos flux RSS réels arrivent ! En attendant, ce texte valide le bon fonctionnement de la structure et du Carrousel.";
-          let img = i === 1 ? "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=500" : "https://images.unsplash.com/photo-1495020689067-958852a6565d?w=500";
-          let link = "https://www.google.fr";
+      masterSources.forEach(source => {
+        const item = document.createElement('div');
+        item.className = 'source-item';
 
-          articlesGlobal.push({ title, link, desc, img, source });
-          
-          const card = document.createElement('div');
-          card.className = 'card';
-          card.innerHTML = `
-            <div class="card-image-wrap"><img class="card-img" src="${img}"></div>
-            <div class="card-body">
-              <div class="card-title"><a href="${link}" target="_blank">${title}</a></div>
-              <p class="card-desc">${desc}</p>
-            </div>
-          `;
-          contentDiv.appendChild(card);
+        const labelZone = document.createElement('div');
+        labelZone.className = 'source-label-zone';
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.className = 'source-checkbox';
+        checkbox.checked = activeSourcesIds.includes(source.id);
+        checkbox.addEventListener('change', () => {
+          if (checkbox.checked) {
+            activeSourcesIds.push(source.id);
+          } else {
+            activeSourcesIds = activeSourcesIds.filter(id => id !== source.id);
+          }
+          localStorage.setItem("mobileActiveSources", JSON.stringify(activeSourcesIds));
+        });
+
+        // La fameuse pastille de couleur calculée même si décoché !
+        const badge = document.createElement('span');
+        badge.className = 'status-badge';
+        if (sourceStatuses[source.id] === "ok") {
+          badge.style.backgroundColor = "#2ec4b6"; // Vert
+        } else {
+          badge.style.backgroundColor = "#e50914"; // Rouge
         }
+
+        const nameSpan = document.createElement('span');
+        nameSpan.innerText = source.name;
+
+        labelZone.appendChild(checkbox);
+        labelZone.appendChild(badge);
+        labelZone.appendChild(nameSpan);
+        item.appendChild(labelZone);
+
+        const delBtn = document.createElement('button');
+        delBtn.className = 'delete-source-btn';
+        delBtn.innerText = '❌';
+        delBtn.addEventListener('click', () => {
+          masterSources = masterSources.filter(s => s.id !== source.id);
+          activeSourcesIds = activeSourcesIds.filter(id => id !== source.id);
+          localStorage.setItem("mobileCustomSources", JSON.stringify(masterSources));
+          localStorage.setItem("mobileActiveSources", JSON.stringify(activeSourcesIds));
+          renderSourcesMenu();
+        });
+        item.appendChild(delBtn);
+
+        container.appendChild(item);
       });
     }
 
-    // Moteur du Carrousel
+    // Formulaire d'ajout mobile
+    document.getElementById('btn-add-source').addEventListener('click', () => {
+      const nameIn = document.getElementById('input-mobile-name');
+      const urlIn = document.getElementById('input-mobile-url');
+      const name = nameIn.value.trim();
+      const url = urlIn.value.trim();
+
+      if (!name || !url) return alert("Veuillez remplir tous les champs.");
+      if (!url.startsWith("http://") && !url.startsWith("https://")) return alert("L'URL doit commencer par http ou https.");
+
+      const newId = "mob_" + Date.now();
+      masterSources.push({ id: newId, name, url });
+      activeSourcesIds.push(newId);
+
+      localStorage.setItem("mobileCustomSources", JSON.stringify(masterSources));
+      localStorage.setItem("mobileActiveSources", JSON.stringify(activeSourcesIds));
+
+      nameIn.value = ""; urlIn.value = "";
+      renderSourcesMenu();
+    });
+
+    // Tout cocher / Tout décocher
+    document.getElementById('btn-mobile-check-all').addEventListener('click', () => {
+      activeSourcesIds = masterSources.map(s => s.id);
+      localStorage.setItem("mobileActiveSources", JSON.stringify(activeSourcesIds));
+      renderSourcesMenu();
+    });
+    document.getElementById('btn-mobile-uncheck-all').addEventListener('click', () => {
+      activeSourcesIds = [];
+      localStorage.setItem("mobileActiveSources", JSON.stringify(activeSourcesIds));
+      renderSourcesMenu();
+    });
+
+    // Événements d'ouverture/fermeture du menu de gestion
+    const panel = document.getElementById('sources-panel');
+    document.getElementById('btn-open-sources').addEventListener('click', () => { panel.style.display = 'block'; });
+    document.getElementById('btn-close-sources').addEventListener('click', () => { 
+      panel.style.display = 'none'; 
+      loadFeeds(); // Relance automatiquement le tri d'actualités à la fermeture !
+    });
+
+    // --- MOTEUR DU CARROUSEL ---
     function showSlide(index) {
       if (articlesGlobal.length === 0) return;
       if (index >= articlesGlobal.length) { carouselIndex = 0; index = 0; }
       const art = articlesGlobal[index];
       const container = document.getElementById('carousel-slide');
       
+      // CONFIGURATION MODIFIÉE : Le bouton rouge est maintenant remonté TOUT EN HAUT pour l'iPhone !
       container.innerHTML = `
         <div class="slide" style="background-image: url('${art.img || 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=500'}')">
           <div class="slide-content">
-            <span style="background:#e50914; padding:4px 10px; border-radius:4px; font-size:11px; font-weight:bold; text-transform:uppercase;">${art.source}</span>
-            <h2 style="font-size:1.4em; margin:15px 0 10px 0; font-weight:800; line-height:1.3;">${art.title}</h2>
-            <p style="font-size:0.9em; color:#ccc; margin-bottom:15px; line-height:1.4;">${art.desc}</p>
-            <button onclick="window.open('${art.link}', '_blank')" style="background:white; color:black; border:none; padding:10px 20px; border-radius:6px; font-weight:bold; font-size:0.9em; width:100%;">Lire l'article entier ↗</button>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+              <span style="background:#e50914; padding:4px 10px; border-radius:4px; font-size:11px; font-weight:bold; text-transform:uppercase;">${art.source}</span>
+              <span style="font-size:11px; color:#aaa;">${index + 1}/${articlesGlobal.length}</span>
+            </div>
+            
+            <!-- CORRECTION : Bouton placé stratégiquement en haut de la zone texte -->
+            <button class="carousel-action-btn" onclick="window.open('${art.link}', '_blank')">Lire l'article entier ↗</button>
+            
+            <h2 style="font-size:1.3em; margin:0 0 10px 0; font-weight:800; line-height:1.3; color:white; border:none; padding:0;">${art.title}</h2>
+            <p style="font-size:0.88em; color:#bbb; margin:0; line-height:1.4;">${art.desc}</p>
           </div>
         </div>
       `;
@@ -220,7 +370,7 @@
       showSlide(carouselIndex);
       
       while(carouselActive) {
-        await sleep(3000);
+        await sleep(3000); // 3 secondes d'affichage automatique
         if(carouselActive) {
           carouselIndex++;
           showSlide(carouselIndex);
@@ -233,6 +383,7 @@
       carouselActive = false;
     });
 
+    // Lancement du chargement initial de l'application
     loadFeeds();
   </script>
 </body>
